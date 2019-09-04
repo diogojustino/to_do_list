@@ -1,0 +1,57 @@
+{% extends "basic_layout.html" %}
+{% load static %}
+{% block titulo %}Home{% endblock %}
+{% block conteudo %}
+
+    Bem-vindo,
+    {% if  request.user.first_name %}
+        {{ request.user.first_name }}
+    {% else %}
+        Sem nome
+    {% endif %}, <a href="{% url 'my_app:logout' %}">Logout</a>
+    <div>
+        <a href="#todos" onclick="requisicao('{% url 'my_app:ajax_tabela_todos' %}', 'div_conteudo')">Todos</a>
+        <a href="#ativas" onclick="requisicao('{% url 'my_app:ajax_tabela_ativa' %}', 'div_conteudo')">Ativa</a>
+        <a href="#concluidas" onclick="requisicao('{% url 'my_app:ajax_tabela_concluida' %}', 'div_conteudo')">Concluida</a>
+
+    </div>
+    <div id="div_conteudo">
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+
+        function isReady(httpRequest){
+            return httpRequest.status === 200
+        }
+        
+        function requisicao(url, destino) {
+
+            document.getElementById(destino).innerHTML = '<img src="{% static 'img/loader.gif' %}" />';
+
+            let httpRequest = new XMLHttpRequest();
+
+            httpRequest.onreadystatechange = function(){
+
+                const CONCLUIDA = 4;
+
+                switch (httpRequest.readyState) {
+                    case CONCLUIDA:
+                         if(isReady(httpRequest)){
+
+                            document.getElementById(destino).innerHTML = httpRequest.responseText;
+                         }
+                         break;
+                }
+
+            };
+
+            httpRequest.open('GET', url);
+            httpRequest.send();
+        }
+
+
+    </script>
+{% endblock %}

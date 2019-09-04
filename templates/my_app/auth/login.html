@@ -1,0 +1,24 @@
+{% extends "basic_layout.html" %}
+{% block titulo %}Login{% endblock %}
+{% block conteudo %}
+    <form action="{% url 'my_app:login' %}" method="post">
+        {% csrf_token %}
+        {% if mensagem %}
+            {{mensagem}}
+        {% endif %}
+        <div>
+            <label for="login">Login</label>
+            <input type="text"  class="form-control" id="login" name="login" placeholder="Entre com seu login">
+        </div>
+        <div >
+            <label for="senha">Senha</label>
+            <input type="password"  class="form-control" id="senha" name="senha" placeholder="Entre com a senha">
+        </div>
+        <button>Entrar</button><button type="reset">Cancelar</button>
+        <a href="{% url 'my_app:cadastro' %}">Cadastre-se</a>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

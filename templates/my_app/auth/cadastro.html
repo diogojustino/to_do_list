@@ -1,0 +1,22 @@
+{% extends "basic_layout.html" %}
+{% block titulo %}Cadastro{% endblock %}
+{% block conteudo %}
+
+    <form action="{% url 'my_app:cadastro' %}" method="post" {% if form_submitted %}class="was-validated"{% endif %}>
+        {% csrf_token %}
+        {{ form.username.label_tag}}
+        {{ form.username}}
+        {{ form.password.label_tag}}
+        {{ form.password}}
+        {{ form.first_name.label_tag}}
+        {{ form.first_name}}
+        {{ form.last_name.label_tag}}
+        {{ form.last_name}}
+        <button>Cadastar</button>
+    </form>
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
