@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, RedirectView
 
 from my_app.forms import UserForm, TarefaForm
 from my_app.models import Tarefa
@@ -10,40 +12,50 @@ from my_app.models import Tarefa
 # Create your views here.
 
 
-def __usuario_logado_(user):
-    return user.__str__() != 'AnonymousUser'
-
-
-def __autenticar_(request):
-    login = request.POST.get('login')
-    senha = request.POST.get('senha')
-
-    return authenticate(username=login, password=senha)
-
 
 def __is_post_(method):
     return method == 'POST'
 
 
-def login(request):
-    dados = {}
+class LoginView(RedirectView, TemplateView):
+    url = reverse_lazy('my_app:home')
+    template_name = 'my_app/auth/login.html'
 
-    if __usuario_logado_(request.user):
-        return redirect('my_app:home')
+    def __usuario_logado_(self, user):
+        return user.__str__() != 'AnonymousUser'
 
-    if __is_post_(request.method):
-        usuario = __autenticar_(request)
+
+    def __autenticar_(self, request):
+
+        login = request.POST.get('login')
+        senha = request.POST.get('senha')
+
+        return authenticate(username=login, password=senha)
+
+    def get(self, request, *args, **kwargs):
+
+        if self.__usuario_logado_(request.user):
+            return super().get(request, *args, **kwargs)
+        return self.render_to_response(context=None)
+
+    def post(self, request, *args, **kwargs):
+        usuario = self.__autenticar_(request)
+
         if usuario:
             django_login(request, usuario)
-            return redirect('my_app:home')
 
-        dados['mensagem'] = 'Login e senha invalido.'
-    return render(request, 'my_app/auth/login.html', dados)
+            return super().post(request, *args, **kwargs)
+
+        dados = {
+            'mensagem': 'Login e senha invalido.'
+        }
+
+        return self.render_to_response(dados)
 
 
 def cadastro(request):
-    if __usuario_logado_(request.user):
-        return redirect('my_app:home')
+    # if __usuario_logado_(request.user):
+    #     return redirect('my_app:home')
 
     dados = {}
 
@@ -126,3 +138,19 @@ def excluir_tarefa(request, id_tarefa):
         tarefa.delete()
 
     return redirect('my_app:home')
+
+
+def atualizar_tarefa(request, id_tarefa):
+    tarefa = Tarefa.objects.get(id=id_tarefa)
+
+    if __is_post_(request.method):
+        form = TarefaForm(request.POST, instance=tarefa)
+        if form.is_valid():
+            form.save()
+            return redirect('my_app:home')
+    else:
+        form = TarefaForm(instance=tarefa)
+    dados = {
+        'form': form
+    }
+    return render(request, 'my_app/tarefa/atualizar_tarefa.html', dados)

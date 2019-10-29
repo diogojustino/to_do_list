@@ -69,8 +69,7 @@ class TarefaForm(forms.ModelForm):
 
             'terminado': forms.CheckboxInput(
                 attrs={
-                    'placeholder': 'Digite o titulo aqui.',
-                    'disabled': ''
+                    'placeholder': 'Digite o titulo aqui.'
                 }
             ),
         }

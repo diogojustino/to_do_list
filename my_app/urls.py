@@ -8,13 +8,14 @@ from my_app import views
 app_name = 'my_app'
 
 urlpatterns = [
-    path('', views.login),
-    path('login/', views.login, name='login'),
+    path('', views.LoginView.as_view()),
+    path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.logout, name='logout'),
     path('cadastro/', views.cadastro, name='cadastro'),
     path('home/', views.home, name='home'),
     path('cadastro_tarefa', views.cadastro_tarefa, name='cadastro_tarefa'),
     path('<int:id_tarefa>/excluir_tarefa/', views.excluir_tarefa, name='excluir_tarefa'),
+    path('<int:id_tarefa>/atualizar_tarefa/', views.atualizar_tarefa, name='atualizar_tarefa'),
     #ajax
     path('ajax_tabela_ativa/', views.ajax_tabela_ativa, name='ajax_tabela_ativa'),
     path('ajax_tabela_todos/', views.ajax_tabela_todos, name='ajax_tabela_todos'),

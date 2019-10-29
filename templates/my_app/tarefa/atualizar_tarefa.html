@@ -1,10 +1,10 @@
 {% extends "basic_layout.html" %}
-{% block titulo %}Nova Tarefa{% endblock %}
+{% block titulo %}Atualizar Tarefa{% endblock %}
 {% block conteudo %}
     <form action="{% url 'my_app:cadastro_tarefa' %}" method="post">
         {% csrf_token %}
         {{ form }}
-        <button>Cadastrar</button>
+        <button>Salvar</button>
     </form>
 
 {% endblock %}

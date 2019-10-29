@@ -11,7 +11,11 @@
             </tr>
             {% for tarefa in tarefas %}
                 <tr>
-                    <td>{{ tarefa.titulo }}</td>
+                    <td>
+                        <a href="{% url 'my_app:atualizar_tarefa' tarefa.id %}">
+                            {{ tarefa.titulo }}
+                        </a>
+                    </td>
                     <td>{{ tarefa.descricao }}</td>
                     <td>{{ tarefa.data_criacao }}</td>
                     <td>
